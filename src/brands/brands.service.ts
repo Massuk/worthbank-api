@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Brand } from './entities/brand.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BrandsService {
-  create(createBrandDto: CreateBrandDto) {
-    return 'This action adds a new brand';
+constructor(
+  @InjectRepository(Brand)
+  private readonly brandRepository: Repository<Brand>,
+) {}
+
+  async create(createBrandDto: CreateBrandDto) {
+    return await this.brandRepository.save(createBrandDto);
   }
 
-  findAll() {
-    return `This action returns all brands`;
+  async findAll() {
+    return await this.brandRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} brand`;
+  async findOne(id: number) {
+    return await this.brandRepository.findOneBy({ id });
   }
 
-  update(id: number, updateBrandDto: UpdateBrandDto) {
-    return `This action updates a #${id} brand`;
+  async update(id: number, updateBrandDto: UpdateBrandDto) {
+    await this.brandRepository.update(id, updateBrandDto);
+    console.log(`Brand con ID ${id} actualizado con los datos:`, updateBrandDto); 
+    return `Brand con ID ${id} actualizado exitosamente.`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} brand`;
+  async remove(id: number) {
+    await this.brandRepository.softDelete(id);
+    console.log(`Brand con ID ${id} eliminado de forma lógica.`);
+    return `Brand con ID ${id} eliminado exitosamente.`;
   }
 }
