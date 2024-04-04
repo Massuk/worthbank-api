@@ -26,7 +26,6 @@ export class CarsService {
 
   async update(id: number, updateCarDto: UpdateCarDto) {
     await this.carRepository.update(id, updateCarDto);
-    console.log(`Auto con ID ${id} actualizado con los datos:`, updateCarDto);
     return `Auto con ID ${id} actualizado exitosamente.`;
   }
 
